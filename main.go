@@ -77,6 +77,8 @@ func main() {
 	router.HandleFunc("/chain/{table}/{name}/", del_chain).Methods("DELETE")
 	router.HandleFunc("/chain/{table}/{name}/", list_chain).Methods("GET")
 	router.HandleFunc("/mvchain/{table}/{oldname}/{newname}/", rename_chain).Methods("PUT")
+	router.HandleFunc("/jumpchain/{table}/{chain}/{chain_to_jump}/", add_chain_jump).Methods("PUT")
+	router.HandleFunc("/jumpchain/{table}/{chain}/{chain_to_jump}/", del_chain_jump).Methods("DELETE")
 	router.HandleFunc("/save/", save_rules).Methods("GET")
 	router.HandleFunc("/restore/", restore_rules).Methods("PUT")
 
@@ -1035,3 +1037,56 @@ func rename_chain (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// PUT /jumpchain/{table}/{chain}/{chain_to_jump}/
+func add_chain_jump (w http.ResponseWriter, r *http.Request) {
+	if *htpasswdfile != "" {
+		htpasswd := auth.HtpasswdFileProvider(*htpasswdfile)
+		authenticator := auth.NewBasicAuthenticator("Basic Realm", htpasswd)
+		usercheck := authenticator.CheckAuth(r)
+		if usercheck == "" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+	}
+	vars := mux.Vars(r)
+
+	ipt, err := iptables.New()
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	
+	rulespec := []string{"-j", vars["chain_to_jump"]}
+	resp_err = ipt.AppendUnique(vars["table"], vars["chain"], rulespec...)
+	if resp_err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintln(w, resp_err)
+	}
+}
+
+// DELETE /jumpchain/{table}/{chain}/{chain_to_jump}/
+func del_chain_jump (w http.ResponseWriter, r *http.Request) {
+	if *htpasswdfile != "" {
+		htpasswd := auth.HtpasswdFileProvider(*htpasswdfile)
+		authenticator := auth.NewBasicAuthenticator("Basic Realm", htpasswd)
+		usercheck := authenticator.CheckAuth(r)
+		if usercheck == "" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+	}
+	vars := mux.Vars(r)
+
+	ipt, err := iptables.New()
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	
+	rulespec := []string{"-j", vars["chain_to_jump"]}
+	resp_err = ipt.Delete(vars["table"], vars["chain"], rulespec...)
+	if resp_err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintln(w, resp_err)
+	}
+}

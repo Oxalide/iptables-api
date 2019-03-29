@@ -70,6 +70,10 @@ Test,Add,Del chain with the parameters
 Rename chain with the parameters
 
 	PUT /mvchain/{table}/{oldname}/{newname}/
+	
+Add,Del chain jump with the parameters
+
+	PUT/DELETE /jumpchain/{table}/{chain}/{chain_to_jump}/
 
 **Save:**
 
