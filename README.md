@@ -1,5 +1,5 @@
-# api-iptables
-[![GoDoc](https://godoc.org/github.com/jeremmfr/api-iptables?status.svg)](https://godoc.org/github.com/jeremmfr/api-iptables) [![Go Report Card](https://goreportcard.com/badge/github.com/jeremmfr/api-iptables)](https://goreportcard.com/report/github.com/jeremmfr/api-iptables)
+# iptables-api
+[![GoDoc](https://godoc.org/github.com/jeremmfr/iptables-api?status.svg)](https://godoc.org/github.com/jeremmfr/iptables-api) [![Go Report Card](https://goreportcard.com/badge/github.com/jeremmfr/iptables-api)](https://goreportcard.com/report/github.com/jeremmfr/iptables-api)
 
 Create API REST for iptables command
 
@@ -29,7 +29,7 @@ Run:
 	  -save_path string
 			path for backups => /save (default "var/backups/iptables-api/")
 
-    ./iptables-api -https -ip=192.168.0.1 -port=8443 -log=/var/log/api-iptables.access.log -cert=cert.pem -key=key.pem -htpasswd=/root/.htpasswd
+    ./iptables-api -https -ip=192.168.0.1 -port=8443 -log=/var/log/iptables-api.access.log -cert=cert.pem -key=key.pem -htpasswd=/root/.htpasswd
 
 API List :
 ---------
