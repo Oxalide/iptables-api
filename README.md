@@ -1,15 +1,14 @@
-# api-iptables
+# iptables-api
+[![GoDoc](https://godoc.org/github.com/jeremmfr/iptables-api?status.svg)](https://godoc.org/github.com/jeremmfr/iptables-api) [![Go Report Card](https://goreportcard.com/badge/github.com/jeremmfr/iptables-api)](https://goreportcard.com/report/github.com/jeremmfr/iptables-api)
 
-Create API REST for iptables command with :
-  - https://github.com/oxalide/go-iptables/  (forked from coreos/go-iptables)
-  - https://github.com/gorilla/mux
-  - https://github.com/gorilla/handlers
+Create API REST for iptables command
 
 Compile:
 --------
+export GO111MODULE=on
 go build -o iptables-api
 
-Run: 
+Run:
 ----
     ./iptables-api -h
 	Usage of /root/iptables-api:
@@ -30,9 +29,9 @@ Run:
 	  -save_path string
 			path for backups => /save (default "var/backups/iptables-api/")
 
-    ./iptables-api -https -ip=192.168.0.1 -port=8443 -log=/var/log/api-iptables.access.log -cert=cert.pem -key=key.pem -htpasswd=/root/.htpasswd
+    ./iptables-api -https -ip=192.168.0.1 -port=8443 -log=/var/log/iptables-api.access.log -cert=cert.pem -key=key.pem -htpasswd=/root/.htpasswd
 
-API List : 
+API List :
 ---------
 
 **Rules:**
@@ -48,7 +47,7 @@ Test,Add,Del iptables rule in table filter with the parameters
 
 Test,Add,Del iptables rule in table nat with the parameters
 
-	GET/PUT/DELETE /nat/{action}/{chain}/{proto}/{iface}/{source}/{destination}/{nat_final}/?dport=00
+	GET/PUT/DELETE /nat/{action}/{chain}/{proto}/{iface}/{source}/{destination}/{nat_final}/?dport=00&except=true
 
 	with for source and destination _ instead / : 10.0.0.0_8
 
@@ -82,5 +81,3 @@ iptables-save > /etc/iptables/rules.v4 && cp /etc/iptables/rules.v4 /var/backups
 iptables-restore $file
 
 	PUT /restore/{file}
-
-	
