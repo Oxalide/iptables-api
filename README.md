@@ -5,7 +5,7 @@ Create API REST for iptables command
 
 Compile:
 --------
-export GO111MODULE=on
+export GO111MODULE=on  
 go build -o iptables-api
 
 Run:
