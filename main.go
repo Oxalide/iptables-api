@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/jeremmfr/go-iptables/iptables" // fork github.com/coreos/go-iptables/iptables
+	"github.com/jeremmfr/go-iptables/iptables"
 )
 
 const (
