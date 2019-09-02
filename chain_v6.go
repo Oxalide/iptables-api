@@ -6,7 +6,7 @@ import (
 
 	auth "github.com/abbot/go-http-auth"
 	"github.com/gorilla/mux"
-	"github.com/jeremmfr/go-iptables/iptables" // fork github.com/coreos/go-iptables/iptables
+	"github.com/jeremmfr/go-iptables/iptables"
 )
 
 // PUT /chain_v6/{table}/{name}/
@@ -27,11 +27,7 @@ func addChainV6(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	if ipt.Wait() {
-		respErr = ipt.NewChainWithWait(vars["table"], vars["name"])
-	} else {
-		respErr = ipt.NewChain(vars["table"], vars["name"])
-	}
+	respErr = ipt.NewChain(vars["table"], vars["name"])
 	if respErr != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, respErr)
@@ -56,32 +52,18 @@ func delChainV6(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	if ipt.Wait() {
-		// Clear chain before delete
-		respErr = ipt.ClearChainWithWait(vars["table"], vars["name"])
-		if respErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintln(w, respErr)
-		}
-		// Delete chain
-		respErr = ipt.DeleteChainWithWait(vars["table"], vars["name"])
-		if respErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintln(w, respErr)
-		}
-	} else {
-		// Clear chain before delete
-		respErr = ipt.ClearChain(vars["table"], vars["name"])
-		if respErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintln(w, respErr)
-		}
-		// Delete chain
-		respErr = ipt.DeleteChain(vars["table"], vars["name"])
-		if respErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintln(w, respErr)
-		}
+
+	// Clear chain before delete
+	respErr = ipt.ClearChain(vars["table"], vars["name"])
+	if respErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintln(w, respErr)
+	}
+	// Delete chain
+	respErr = ipt.DeleteChain(vars["table"], vars["name"])
+	if respErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintln(w, respErr)
 	}
 }
 
@@ -103,26 +85,13 @@ func listChainV6(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	if ipt.Wait() {
-		respStr, respErr := ipt.ListWithWait(vars["table"], vars["name"])
-		if respErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintln(w, respErr)
-		}
-
-		for i := 0; i < len(respStr); i++ {
-			fmt.Fprintln(w, respStr[i])
-		}
-	} else {
-		respStr, respErr := ipt.List(vars["table"], vars["name"])
-		if respErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintln(w, respErr)
-		}
-
-		for i := 0; i < len(respStr); i++ {
-			fmt.Fprintln(w, respStr[i])
-		}
+	respStr, respErr := ipt.List(vars["table"], vars["name"])
+	if respErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintln(w, respErr)
+	}
+	for i := 0; i < len(respStr); i++ {
+		fmt.Fprintln(w, respStr[i])
 	}
 }
 
@@ -144,11 +113,7 @@ func renameChainV6(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	if ipt.Wait() {
-		respErr = ipt.RenameChainWithWait(vars["table"], vars["oldname"], vars["newname"])
-	} else {
-		respErr = ipt.RenameChain(vars["table"], vars["oldname"], vars["newname"])
-	}
+	respErr = ipt.RenameChain(vars["table"], vars["oldname"], vars["newname"])
 	if respErr != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, respErr)

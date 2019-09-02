@@ -9,7 +9,7 @@ import (
 
 	auth "github.com/abbot/go-http-auth"
 	"github.com/gorilla/mux"
-	"github.com/jeremmfr/go-iptables/iptables" // fork github.com/coreos/go-iptables/iptables
+	"github.com/jeremmfr/go-iptables/iptables"
 )
 
 func ruleGenerateV6(r *http.Request) []string {
@@ -108,7 +108,7 @@ func checkPosRulesV6(r *http.Request) ([]string, error) {
 		return nil, err
 	}
 	args := []string{"-t", "filter", "-vnL", vars["chain"], "--line-numbers"}
-	if ipt.Wait() {
+	if ipt.HasWait {
 		args = append(args, "--wait")
 	}
 	rules, err := ipt.ExecuteList(args)
@@ -143,7 +143,7 @@ func addRulesV6(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	if ipt.Wait() {
+	if ipt.HasWait {
 		rulespecs = append(rulespecs, "--wait")
 	}
 	vars := mux.Vars(r)
@@ -180,7 +180,7 @@ func delRulesV6(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	if ipt.Wait() {
+	if ipt.HasWait {
 		rulespecs = append(rulespecs, "--wait")
 	}
 	vars := mux.Vars(r)
@@ -208,7 +208,7 @@ func checkRulesV6(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	if ipt.Wait() {
+	if ipt.HasWait {
 		rulespecs = append(rulespecs, "--wait")
 	}
 	if r.URL.Query().Get("position") != "" {

@@ -9,7 +9,7 @@ import (
 
 	auth "github.com/abbot/go-http-auth"
 	"github.com/gorilla/mux"
-	"github.com/jeremmfr/go-iptables/iptables" // fork github.com/coreos/go-iptables/iptables
+	"github.com/jeremmfr/go-iptables/iptables"
 )
 
 func dnatGenerateV6(r *http.Request) []string {
@@ -125,7 +125,7 @@ func checkPosNatV6(r *http.Request) ([]string, error) {
 		return nil, err
 	}
 	args := []string{"-t", "nat", "-vnL", vars["chain"], "--line-numbers"}
-	if ipt.Wait() {
+	if ipt.HasWait {
 		args = append(args, "--wait")
 	}
 	nats, err := ipt.ExecuteList(args)
@@ -181,7 +181,7 @@ func addNatV6(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	if ipt.Wait() {
+	if ipt.HasWait {
 		rulespecs = append(rulespecs, "--wait")
 	}
 	if r.URL.Query().Get("position") != "" {
@@ -240,7 +240,7 @@ func delNatV6(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	if ipt.Wait() {
+	if ipt.HasWait {
 		rulespecs = append(rulespecs, "--wait")
 	}
 	respErr = ipt.Delete("nat", vars["chain"], rulespecs...)
@@ -311,7 +311,7 @@ func checkNatV6(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	if ipt.Wait() {
+	if ipt.HasWait {
 		rulespecs = append(rulespecs, "--wait")
 	}
 	respStr, respErr := ipt.Exists("nat", vars["chain"], rulespecs...)
